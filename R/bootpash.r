@@ -1,6 +1,5 @@
 library(pash)  #remove when integrated with pash
 source("./R/input_correction.r") #remove when integrated with pash, and Inputlx corrected
-stop('NOT READY, DO NOT RUN') #remove when integrated with pash
 stop('Rethink using of open and close intervals for bootstrap')
 
 
@@ -366,13 +365,29 @@ boot.default <- function(dx,
 #Bootstrap with parameters: NReplicates, Population size,
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
-pashboot<-function(object, population.size, NRep=1000, use.pclm.raw.if.possible=TRUE){
+#' @examples 
+#' \dontrun{
+#' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
+#' z <- pashboot(object = obj, population.size = 1000, trace = TRUE)
+#' print(z)
+#' }
+pashboot<-function(object, 
+                   population.size, 
+                   N = 1000, 
+                   bs.er = 0.25, 
+                   jk.er = 0.25, 
+                   pace.type = "all", 
+                   shape.type = "all", 
+                   q = 0.5, 
+                   harmonized = TRUE,
+                   trace = TRUE,
+                   alpha = 0.05){
   i.ndx <- attributes(object)$source$input$dx
   i.lx <- attributes(object)$source$input$lx
   i.x <- attributes(object)$source$input$x
   if ((length(i.ndx) == 0) && (length(i.lx) != 0)) i.ndx <- -diff(c(i.lx, 0))
   # If population size not given try to read from the pash attribute
-  if (missing(population.size) && length(attr(object,'population.size')>0)) population.size=attr(object,'population.size')
+  if (missing(population.size) && length(attr(object, 'population.size')>0)) population.size <- attr(object, 'population.size')
   # If population size is still unknown try to get it from source attribute
   if (missing(population.size)) {
     mps <- TRUE
@@ -385,24 +400,32 @@ pashboot<-function(object, population.size, NRep=1000, use.pclm.raw.if.possible=
     mps <- FALSE
     if (!is.numeric(population.size)) stop('Please give correct population size.')
   }
-  if (!((length(i.ndx) == 0) || (!mps))){
-    population.size <- sum(i.ndx)
-  }
-  stop('incomplete')
-  object$
-    if((use.pclm.raw.if.possible) && inherits(object, 'pclm')){
-      #y <- object$pclm$raw$dx*population.size/sum(object$pclm$raw$dx)
-      #x <- object$pclm$raw$x
-      Inputlx(x = pclm.res$raw$x, lx = pclm.res$raw$lx*population.size, nax = nax.method,
-              time_unit = attributes(object)$time_unit, last_open = last_open)
-    } else {
-      #y <- object$lt$ndx*population.size
-      #x <- object$lt$x
-    }
   
-  
-  y=round(y)
-  res$boot
-  class(res)=c('boot',class(res))
+  res<-boot.default(dx = object$lt$ndx*population.size, 
+                    x = object$lt$x, 
+                    pash.parent=object, 
+                    N = N, 
+                    bs.er = bs.er, 
+                    jk.er = jk.er, 
+                    pace.type = pace.type,
+                    shape.type = shape.type,
+                    q = q,
+                    harmonized = harmonized,
+                    trace = trace,
+                    alpha = alpha)
+  res$pash.parent <- object
+  res$population.size <- population.size
+  res$q <-q
+  res$harmonized <- harmonized
+  res$alpha <- alpha
+  class(res) <- 'bootpash'
   res
 }
+
+print.bootpash <- function(object, CI.type = c('BCa', 'Percentile')){
+  if (tolower(CI.type[1]) == 'bca') CI <- object$CI.BCa else if (tolower(CI.type[1]) == '') CI <- object$CI.Percentile else stop('Unknown CI type.')
+  Mat <- cbind(lower = CI[,1], pash = object$Pash, upper = CI[,2])
+  print(Mat, quote = FALSE)
+  invisible()
+}
+  
