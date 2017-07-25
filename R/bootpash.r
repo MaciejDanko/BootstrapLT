@@ -342,7 +342,7 @@ boot.default <- function(dx,
                          pash.parent, 
                          N = 1000, 
                          bs.er = 0.25, 
-                         jk.er = 0.25, 
+                         jk.er = 0.10, 
                          pace.type = "all", 
                          shape.type = "all", 
                          q = 0.5, 
@@ -413,7 +413,7 @@ boot.default <- function(dx,
     CI.BCa <- NULL
     CI.Percentile <- NULL
   }
-  return(list(Pash = OrgPash[!ind0],
+  return(list(Pash = OrgPash,
        CI.BCa = CI.BCa,
        CI.Percentile = CI.Percentile))
 }
@@ -425,8 +425,6 @@ boot.default <- function(dx,
 #' @param object \code{Pash} object.
 #' @param population.size The size of population for the constructed pash object. If not given then it will be read from the \code{object}.
 #' @param N Number of bootstrap replicates.
-#' @param js.er Maximal acceptable fraction of JackKnife errors.
-#' @param bs.er Maximal acceptable fraction of Bootstrap errors.
 #' @param pace.type Which pace measure should be returned (default "all")?
 #' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
 #' @param shape.type Which shape measure should be returned (default "all")?
@@ -434,38 +432,50 @@ boot.default <- function(dx,
 #' @param q GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
 #' See \code{\link{GetPace}} for details.
 #' @param harmonized GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
+#' See \code{\link{GetShape}} for details.
 #' @param trace Logical indicating if to show summary of performed bootstrap.
 #' @param alpha Significance level.
-#' See \code{\link{GetShape}} for details.
+#' @param bs.er Maximal acceptable fraction of Bootstrap errors 
+#' (a measure does not exists for a certain bootstraped data).
+#' @param js.er Maximal acceptable fraction of JackKnife errors 
+#' (a measure does not exists for a certain JackKnife cases).
+
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @examples 
 #' \dontrun{
 #' 
+#' #Get a data
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
 #' 
 #' ci1 <- confint(object = obj, population.size = 1000, trace = TRUE)
-#' 
 #' print(ci1, CI.type = 'BCa')
 #' print(ci1, CI.type = 'Percentile')
 #'
-#' ci2 <- confint(object = obj, population.size = 10, trace = TRUE)
+#' #Small population size
+#' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
+#' ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
+#' ci2
+#' print(ci2)
 #' 
-#' print(ci2, CI.type = 'BCa')
-#' print(ci2, CI.type = 'Percentile')
+#' #Very small population size
+#' # There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.
+#' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
+#' ci3 <- confint(object = obj, population.size = 10, shape.type = 'none', trace = TRUE)
+#' 
 #' }
 #' @export
 confint.pash<-function(object, 
                    population.size, 
                    N = 1000, 
-                   bs.er = 0.25, 
-                   jk.er = 0.25, 
                    pace.type = "all", 
                    shape.type = "all", 
                    q = 0.5, 
                    harmonized = TRUE,
                    trace = TRUE,
-                   alpha = 0.05){
+                   alpha = 0.05,
+                   bs.er = 0.25, 
+                   jk.er = 0.10){
   i.ndx <- attributes(object)$source$input$dx
   i.lx <- attributes(object)$source$input$lx
   i.x <- attributes(object)$source$input$x
@@ -511,12 +521,12 @@ confint.pash<-function(object,
 #' @description  
 #' Generic function to print the confidence intervals for pash object.
 #' @param oject An \code{bootpash} object with fitted confidence interval for \code{pash} object.
-#' @param CI.type The type of printed confidence intervals. One of "BCa" or "Percentile".
+#' @param CI.type The type of printed confidence intervals. One from "BCa" or "Percentile".
 #' @export
-print.bootpash <- function(object, CI.type = c('BCa', 'Percentile')){
+print.bootpash <- function(object, CI.type = c('BCa', 'Percentile'), digits = 4){
   if (tolower(CI.type[1]) == 'bca') CI <- object$CI.BCa else if (tolower(CI.type[1]) == 'percentile') CI <- object$CI.Percentile else stop('Unknown CI type.')
   Mat <- cbind(lower = CI[,1], pash = object$Pash, upper = CI[,2])
-  print(round(Mat,4), quote = FALSE)
+  print(round(Mat, digits), quote = FALSE)
   invisible(Mat)
 }
   

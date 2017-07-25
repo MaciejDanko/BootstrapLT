@@ -21,7 +21,7 @@ Calculation of JeckKnife acceleration parameter for BCA method. \cr\cr
 #Get some data
 population.size <- 10000
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
-dx <- as.integer(round(population.size*obj$lt$ndx))
+dx <- lx2dx(round(object$lt$lx*population.size))
 x <- obj$lt$x
 
 #Acceleration parameters calculated by slow method

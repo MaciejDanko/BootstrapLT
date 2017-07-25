@@ -4,11 +4,21 @@
 \alias{boot.default}
 \title{Default procedure to perform bootstrap and calculate confidence intervals of pash measures}
 \usage{
-boot.default(dx, x, pash.parent, N = 1000, bs.er = 0.25, jk.er = 0.25,
+boot.default(dx, x, pash.parent, N = 1000, bs.er = 0.25, jk.er = 0.1,
   pace.type = "all", shape.type = "all", q = 0.5, harmonized = TRUE,
   trace = TRUE, alpha = 0.05)
 }
 \arguments{
+\item{dx}{A vector with integer counts (deaths).}
+
+\item{x}{Beginning of the Age/time class.}
+
+\item{pash.parent}{A parent pash object.}
+
+\item{N}{Number of bootstrap replicates.}
+
+\item{bs.er}{Maximal acceptable fraction of Bootstrap errors.}
+
 \item{pace.type}{Which pace measure should be returned (default "all")?
 Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.}
 
@@ -20,6 +30,12 @@ See \code{\link{GetPace}} for details.}
 
 \item{harmonized}{GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
 See \code{\link{GetShape}} for details.}
+
+\item{trace}{Logical indicating if to show summary of performed bootstrap.}
+
+\item{alpha}{Significance level.}
+
+\item{js.er}{Maximal acceptable fraction of JackKnife errors.}
 }
 \description{
 Default procedure to perform bootstrap and calculate confidence intervals of pash measures. \cr\cr
@@ -31,7 +47,7 @@ Default procedure to perform bootstrap and calculate confidence intervals of pas
 #Get some data
 population.size=105
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
-dx <- as.integer(round(population.size*obj$lt$ndx))
+dx <- lx2dx(round(object$lt$lx*population.size))
 x <- obj$lt$x
 
 #Calcualte confidence intervals usung bootstrap

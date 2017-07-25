@@ -4,9 +4,9 @@
 \alias{confint.pash}
 \title{Claculates condfidence intervals for pash measures}
 \usage{
-\method{confint}{pash}(object, population.size, N = 1000, bs.er = 0.25,
-  jk.er = 0.25, pace.type = "all", shape.type = "all", q = 0.5,
-  harmonized = TRUE, trace = TRUE, alpha = 0.05)
+\method{confint}{pash}(object, population.size, N = 1000, pace.type = "all",
+  shape.type = "all", q = 0.5, harmonized = TRUE, trace = TRUE,
+  alpha = 0.05, bs.er = 0.25, jk.er = 0.1)
 }
 \arguments{
 \item{object}{\code{Pash} object.}
@@ -26,6 +26,16 @@ See \code{\link{GetPace}} for details.}
 
 \item{harmonized}{GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
 See \code{\link{GetShape}} for details.}
+
+\item{trace}{Logical indicating if to show summary of performed bootstrap.}
+
+\item{alpha}{Significance level.}
+
+\item{bs.er}{Maximal acceptable fraction of Bootstrap errors 
+(a measure does not exists for a certain bootstraped data).}
+
+\item{js.er}{Maximal acceptable fraction of JackKnife errors 
+(a measure does not exists for a certain JackKnife cases).}
 }
 \description{
 Claculates condfidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
@@ -33,12 +43,23 @@ Claculates condfidence intervals around pash measures for a given \code{pash} ob
 \examples{
 \dontrun{
 
+#Get a data
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
 
-z <- confint(object = obj, population.size = 1000, trace = TRUE)
+ci1 <- confint(object = obj, population.size = 1000, trace = TRUE)
+print(ci1, CI.type = 'BCa')
+print(ci1, CI.type = 'Percentile')
 
-print(z, CI.type = 'BCa')
-print(z, CI.type = 'Percentile')
+#Small population size
+obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
+ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
+ci2
+print(ci2)
+
+#Very small population size
+# There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.
+obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
+ci3 <- confint(object = obj, population.size = 10, shape.type = 'none', trace = TRUE)
 
 }
 }

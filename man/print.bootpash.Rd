@@ -4,10 +4,11 @@
 \alias{print.bootpash}
 \title{Printing the confidence intervals for pash object}
 \usage{
-\method{print}{bootpash}(object, CI.type = c("BCa", "Percentile"))
+\method{print}{bootpash}(object, CI.type = c("BCa", "Percentile"),
+  digits = 4)
 }
 \arguments{
-\item{CI.type}{The type of printed confidence intervals. One of "BCa" or "Percentile".}
+\item{CI.type}{The type of printed confidence intervals. One from "BCa" or "Percentile".}
 
 \item{oject}{An \code{bootpash} object with fitted confidence interval for \code{pash} object.}
 }
