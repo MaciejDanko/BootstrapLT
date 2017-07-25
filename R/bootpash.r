@@ -1,23 +1,37 @@
 library(pash)  #remove when integrated with pash
-source("./R/input_correction.r") #remove when integrated with pash, and Inputlx corrected
-stop('Rethink using of open and close intervals for bootstrap')
+library(roxygen2)
+#source("./R/input_correction.r") #remove when integrated with pash, and Inputlx corrected
 
-
-#' Calculate middle points of an age interval
+#' Calculate midd-classes of an age interval
 #' 
+#' @description 
+#' Calculate midd-classes of an age interval. \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param x Vector with begining of age classes.
 #' @keywords internal
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 getInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
 
 #' Converting dx to lx assuming that all events are exactly observed (no censoring)
-#' 
+#'
+#' @description 
+#' Converting dx to lx assuming that all events are exactly observed (no censoring). \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param dx Vector with death counts
+#' @return A vector with population size at the beginnig of interval.
+#' @details 
+#' The presence or absence of open interval does not matter here.
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2age}}, and \code{\link{age2dx}}.
 #' @keywords internal
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 dx2lx<-function(dx) sum(dx)-c(0,cumsum(dx))[seq_along(dx)]
 
 #' Converting lx to dx assuming that all events are exactly observed (no censoring)
-#' 
+#'
+#' @description Converting lx to dx assuming that all events are exactly observed (no censoring). \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param lx population size at the beginning of the age interval.
+#' @return A vector with death counts. 
 #' @seealso \code{\link{dx2lx}}, \code{\link{dx2age}}, and \code{\link{age2dx}}.
 #' @keywords internal
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
@@ -29,7 +43,7 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #' The function converts counts in vector dx into into individual age/time at deaths.
 #' Notice that dx does not contain information about censoring so resulting vector has only exactly observed events.\cr\cr
 #' \emph{\bold{Internal function}}
-#' @param ndx Death counts vector.
+#' @param dx Death counts vector.
 #' @param x Beginning of the Age/time class. A vector of the same length as \code{ndx}.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2lx}}, and \code{\link{age2dx}}.
@@ -43,6 +57,7 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #' age2dx(dx2age(dx,x),x)
 #'
 #' }
+#' @keywords internal
 dx2age<-function(dx,x) unlist(sapply(seq_along(x),function (kk) rep(getInterval(x)[kk],dx[kk])))
 
 #' Constructing dx from individual ages/times at deaths
@@ -70,8 +85,11 @@ age2dx <- function(times,x) (hist(x = times, plot = FALSE, right = FALSE, breaks
 
 #' Geting pace and shape measures for bootstrap computations
 #'
-#' @param dx A vector with integer counts (deaths)
-#' @param pash.parent A parent pash object
+#' @description Geting pace and shape measures for bootstrap computations. \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param dx A vector with integer counts (deaths).
+#' @param x Beginning of the Age/time classes. Vector with the same length as \code{dx}
+#' @param pash.parent A parent pash object.
 #' @param pace.type Which pace measure should be returned (default "all")?
 #' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
 #' @param shape.type Which shape measure should be returned (default "all")?
@@ -91,19 +109,26 @@ getpash <- function(dx, x, pash.parent, pace.type = "all", shape.type = "all", q
   return(c(p,s))
 }
 
-#' Fast JackKnife method performed on original \code{dx}
+#' Fast JackKnife method performed on \code{dx}
 #' 
+#' @description Fast JackKnife method performed on \code{dx}.\cr\cr
+#' \emph{\bold{Internal function}}
+#' @param dx A vector with integer counts (deaths).
+#' @param x Beginning of the Age/time classes. Vector with the same length as \code{dx}.
+#' @param ... Other parameters passed to \code{\link{getpash}} function.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @keywords internal
 JackKnife_dx <- function(dx, x, ...) sapply(x[dx>0], function(kk) getpash(dx = dx - (x == kk), x = x, ...))
 
-#' Fast Bootstrap method performed on original \code{dx}
-#' 
+#' Fast Bootstrap method performed on \code{dx}
+#' @description Fast Bootstrap method performed on \code{dx}.\cr\cr
+#' \emph{\bold{Internal function}}
 #' @param x Beginning of the Age/time class.
-#' @param dx A vector with integer counts (deaths)
-#' @param pash.parent A parent pash object
+#' @param dx A vector with integer counts (deaths).
+#' @param pash.parent A parent pash object.
+#' @param N Number of bootstrap replicates.
 #' @param pace.type Which pace measure should be returned (default "all")?
 #' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
 #' @param shape.type Which shape measure should be returned (default "all")?
@@ -138,17 +163,20 @@ Bootstrap_dx <- function(dx,
 
 #' Calculation of JeckKnife acceleration parameter for BCA method
 #' 
-#' @param JackKnifeMat JackKnife matrix with one row per each considered pash measure. See \code{\link{JackKnife_dx}} 
-#' @param dx A vector with integer counts (deaths)
+#' @description Calculation of JeckKnife acceleration parameter for BCA method. \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param JackKnifeMat JackKnife matrix with one row per each considered pash measure. See \code{\link{JackKnife_dx}}.
+#' @param dx A vector with integer counts (deaths).
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall. Page 186.
 #' @examples
 #' \dontrun{
+#' 
 #' #Get some data
 #' population.size <- 10000
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
-#' dx <- as.integer(round(population.size*obj$lt$ndx))
+#' dx <- lx2dx(round(object$lt$lx*population.size))
 #' x <- obj$lt$x
 #' 
 #' #Acceleration parameters calculated by slow method
@@ -187,12 +215,18 @@ JackKnifeAcc <- function(JackKnifeMat, dx){
   a
 }
 
+#' Checking if all elements in the vector are equal
+#' @description Checking if all elements in the vector are equal. .\cr\cr
+#' \emph{\bold{Internal function}}
+#' @param x A vector be analized.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @keywords internal
 all.elements.equal <- function(x) round(sum(abs(diff(x))),floor(-log10(.Machine$double.eps^0.8))) == 0
 
 #' Calcualtion of the BCA type of confidence intervals
 #' 
+#' @description Calcualtion of the BCA type of confidence intervals. \cr\cr
+#' \emph{\bold{Internal function}}
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
@@ -230,7 +264,9 @@ BCA.CI <- function(OrgEst, BootEst, JackKnifeMat, Orgdx, alpha = 0.05) {
 }
 
 #' Calcualtion of the Percentile type of confidence intervals
-#' 
+#'
+#' @description Calcualtion of the Percentile type of confidence intervals. \cr\cr
+#' \emph{\bold{Internal function}}
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
@@ -265,20 +301,40 @@ PER.CI <- function(OrgEst, BootEst, alpha=0.05) {
 
 #' Default procedure to perform bootstrap and calculate confidence intervals of pash measures
 #' 
+#' @description Default procedure to perform bootstrap and calculate confidence intervals of pash measures. \cr\cr
+#' \emph{\bold{Internal function}}
+#' @param x Beginning of the Age/time class.
+#' @param dx A vector with integer counts (deaths).
+#' @param pash.parent A parent pash object.
+#' @param N Number of bootstrap replicates.
+#' @param js.er Maximal acceptable fraction of JackKnife errors.
+#' @param bs.er Maximal acceptable fraction of Bootstrap errors.
+#' @param pace.type Which pace measure should be returned (default "all")?
+#' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
+#' @param shape.type Which shape measure should be returned (default "all")?
+#' Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.
+#' @param q GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
+#' See \code{\link{GetPace}} for details.
+#' @param harmonized GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
+#' See \code{\link{GetShape}} for details.
+#' @param trace Logical indicating if to show summary of performed bootstrap.
+#' @param alpha Significance level.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @examples 
 #' \dontrun{
+#' 
 #' #Get some data
 #' population.size=105
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
-#' dx <- as.integer(round(population.size*obj$lt$ndx))
+#' dx <- lx2dx(round(object$lt$lx*population.size))
 #' x <- obj$lt$x
 #' 
 #' #Calcualte confidence intervals usung bootstrap
 #' z <- boot.default(dx = dx, x = x, pash.parent = obj, trace = TRUE)
 #' z
+#' 
 #' }
 #' @keywords internal
 boot.default <- function(dx, 
@@ -362,16 +418,44 @@ boot.default <- function(dx,
        CI.Percentile = CI.Percentile))
 }
 
-#Bootstrap with parameters: NReplicates, Population size,
+
+#' Claculates condfidence intervals for pash measures
+#' 
+#' @description Claculates condfidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
+#' @param object \code{Pash} object.
+#' @param population.size The size of population for the constructed pash object. If not given then it will be read from the \code{object}.
+#' @param N Number of bootstrap replicates.
+#' @param js.er Maximal acceptable fraction of JackKnife errors.
+#' @param bs.er Maximal acceptable fraction of Bootstrap errors.
+#' @param pace.type Which pace measure should be returned (default "all")?
+#' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
+#' @param shape.type Which shape measure should be returned (default "all")?
+#' Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.
+#' @param q GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
+#' See \code{\link{GetPace}} for details.
+#' @param harmonized GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
+#' @param trace Logical indicating if to show summary of performed bootstrap.
+#' @param alpha Significance level.
+#' See \code{\link{GetShape}} for details.
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @examples 
 #' \dontrun{
+#' 
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
-#' z <- pashboot(object = obj, population.size = 1000, trace = TRUE)
-#' print(z)
+#' 
+#' ci1 <- confint(object = obj, population.size = 1000, trace = TRUE)
+#' 
+#' print(ci1, CI.type = 'BCa')
+#' print(ci1, CI.type = 'Percentile')
+#'
+#' ci2 <- confint(object = obj, population.size = 10, trace = TRUE)
+#' 
+#' print(ci2, CI.type = 'BCa')
+#' print(ci2, CI.type = 'Percentile')
 #' }
-pashboot<-function(object, 
+#' @export
+confint.pash<-function(object, 
                    population.size, 
                    N = 1000, 
                    bs.er = 0.25, 
@@ -398,10 +482,10 @@ pashboot<-function(object,
     message('Population size set to ', population.size, '\n')
   } else {
     mps <- FALSE
-    if (!is.numeric(population.size)) stop('Please give correct population size.')
+    if (!is.numeric(population.size)) stop('Please give a correct population size.')
   }
   
-  res<-boot.default(dx = object$lt$ndx*population.size, 
+  res<-boot.default(dx = lx2dx(round(object$lt$lx*population.size)), 
                     x = object$lt$x, 
                     pash.parent=object, 
                     N = N, 
@@ -422,10 +506,17 @@ pashboot<-function(object,
   res
 }
 
+#' Printing the confidence intervals for pash object
+#' 
+#' @description  
+#' Generic function to print the confidence intervals for pash object.
+#' @param oject An \code{bootpash} object with fitted confidence interval for \code{pash} object.
+#' @param CI.type The type of printed confidence intervals. One of "BCa" or "Percentile".
+#' @export
 print.bootpash <- function(object, CI.type = c('BCa', 'Percentile')){
-  if (tolower(CI.type[1]) == 'bca') CI <- object$CI.BCa else if (tolower(CI.type[1]) == '') CI <- object$CI.Percentile else stop('Unknown CI type.')
+  if (tolower(CI.type[1]) == 'bca') CI <- object$CI.BCa else if (tolower(CI.type[1]) == 'percentile') CI <- object$CI.Percentile else stop('Unknown CI type.')
   Mat <- cbind(lower = CI[,1], pash = object$Pash, upper = CI[,2])
-  print(Mat, quote = FALSE)
-  invisible()
+  print(round(Mat,4), quote = FALSE)
+  invisible(Mat)
 }
   

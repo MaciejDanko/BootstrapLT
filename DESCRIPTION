@@ -1,0 +1,10 @@
+Package: BootstrapLT
+Title: CI for pash measures
+Version: 0.1
+Authors@R: person("Maciej J.", "Danko", email = "danko@demogr.mpg.de",
+                  role = c("aut", "cre"))
+Description: Calcualtes confidence intervals for pash measures. 
+Depends: R (>= 3.1.0)
+License: What license is it under?
+LazyData: true
+RoxygenNote: 6.0.1
