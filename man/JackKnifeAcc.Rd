@@ -24,13 +24,13 @@ obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$na
 dx <- lx2dx(round(object$lt$lx*population.size))
 x <- obj$lt$x
 
-#Acceleration parameters calculated by slow method
+#Acceleration parameters calculated by slow method:
 times <- dx2age(dx,x)
 gp <- function(times, x, pash.parent) getpash(dx = age2dx(times = times, x=x), x=x, pash.parent = pash.parent)
 J1 <- as.matrix(sapply(seq_along(times), function(k) gp(times = times[-k], x = x, pash.parent = obj)))
 a.slow <- JackKnifeAcc(J1)
 
-#Acceleration parameters calculated by fast method
+#Acceleration parameters calculated by fast method:
 J2 <- JackKnife_dx(dx = org.dx, x = org.x, pash.parent = obj)
 a.fast <- JackKnifeAcc(J2,dx)
 

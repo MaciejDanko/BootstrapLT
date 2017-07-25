@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootpash.r
 \name{confint.pash}
 \alias{confint.pash}
-\title{Claculates condfidence intervals for pash measures}
+\title{Calculating confidence intervals for pash measures}
 \usage{
 \method{confint}{pash}(object, population.size, N = 1000, pace.type = "all",
   shape.type = "all", q = 0.5, harmonized = TRUE, trace = TRUE,
@@ -11,7 +11,7 @@
 \arguments{
 \item{object}{\code{Pash} object.}
 
-\item{population.size}{The size of population for the constructed pash object. If not given then it will be read from the \code{object}.}
+\item{population.size}{The size of population for the constructed \code{pash} object. If not given then it will be read from the \code{object}.}
 
 \item{N}{Number of bootstrap replicates.}
 
@@ -32,13 +32,13 @@ See \code{\link{GetShape}} for details.}
 \item{alpha}{Significance level.}
 
 \item{bs.er}{Maximal acceptable fraction of Bootstrap errors 
-(a measure does not exists for a certain bootstraped data).}
+(a measure does not exists for a certain bootstrapped data).}
 
 \item{js.er}{Maximal acceptable fraction of JackKnife errors 
 (a measure does not exists for a certain JackKnife cases).}
 }
 \description{
-Claculates condfidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
+Calculating confidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
 }
 \examples{
 \dontrun{
@@ -54,7 +54,6 @@ print(ci1, CI.type = 'Percentile')
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
 ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
 ci2
-print(ci2)
 
 #Very small population size
 # There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.

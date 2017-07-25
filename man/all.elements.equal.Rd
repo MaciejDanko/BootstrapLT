@@ -7,7 +7,7 @@
 \method{all}{elements.equal}(x)
 }
 \arguments{
-\item{x}{A vector be analized.}
+\item{x}{A vector to be analyzed.}
 }
 \description{
 Checking if all elements in the vector are equal. .\cr\cr

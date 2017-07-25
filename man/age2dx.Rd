@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootpash.r
 \name{age2dx}
 \alias{age2dx}
-\title{Constructing dx from individual ages/times at deaths}
+\title{Constructing \code{dx} from individual ages/times at deaths}
 \usage{
 age2dx(times, x)
 }
@@ -12,7 +12,7 @@ age2dx(times, x)
 \item{x}{Beginning of the Age/time class. The resulting vector of \code{dx} will have the same length.}
 }
 \description{
-The function converts ages/times at death into dx according.
+The function converts ages/times at death into \code{dx} according.
 Notice that age at deaths are assumed to be exactly observed.\cr\cr
 \emph{\bold{Internal function}}
 }

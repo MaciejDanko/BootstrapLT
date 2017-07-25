@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootpash.r
 \name{getpash}
 \alias{getpash}
-\title{Geting pace and shape measures for bootstrap computations}
+\title{Calculating pace and shape measures as one vector for bootstrap computations}
 \usage{
 getpash(dx, x, pash.parent, pace.type = "all", shape.type = "all",
   q = 0.5, harmonized = TRUE)
@@ -15,10 +15,10 @@ getpash(dx, x, pash.parent, pace.type = "all", shape.type = "all",
 \item{pash.parent}{A parent pash object.}
 
 \item{pace.type}{Which pace measure should be returned (default "all")?
-Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.}
+Use "none" if you don't want to return any pace measure. See \code{\link{GetPace}} for details.}
 
 \item{shape.type}{Which shape measure should be returned (default "all")?
-Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.}
+Use "none" if you don't want to return any shape measure. See \code{\link{GetShape}} for details.}
 
 \item{q}{GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
 See \code{\link{GetPace}} for details.}
@@ -27,7 +27,7 @@ See \code{\link{GetPace}} for details.}
 See \code{\link{GetShape}} for details.}
 }
 \description{
-Geting pace and shape measures for bootstrap computations. \cr\cr
+Calculating pace and shape measures as one vector for bootstrap computations. \cr\cr
 \emph{\bold{Internal function}}
 }
 \keyword{internal}

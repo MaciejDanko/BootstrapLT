@@ -13,7 +13,7 @@ boot.default(dx, x, pash.parent, N = 1000, bs.er = 0.25, jk.er = 0.1,
 
 \item{x}{Beginning of the Age/time class.}
 
-\item{pash.parent}{A parent pash object.}
+\item{pash.parent}{A parent \code{pash} object.}
 
 \item{N}{Number of bootstrap replicates.}
 

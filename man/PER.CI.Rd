@@ -2,12 +2,12 @@
 % Please edit documentation in R/bootpash.r
 \name{PER.CI}
 \alias{PER.CI}
-\title{Calcualtion of the Percentile type of confidence intervals}
+\title{Calculation of the Percentile type of confidence intervals}
 \usage{
 PER.CI(OrgEst, BootEst, alpha = 0.05)
 }
 \description{
-Calcualtion of the Percentile type of confidence intervals. \cr\cr
+Calculation of the Percentile type of confidence intervals. \cr\cr
 \emph{\bold{Internal function}}
 }
 \references{

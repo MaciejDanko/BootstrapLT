@@ -10,7 +10,7 @@ dx2lx(dx)
 \item{dx}{Vector with death counts}
 }
 \value{
-A vector with population size at the beginnig of interval.
+A vector with population size at the beginning of interval.
 }
 \description{
 Converting dx to lx assuming that all events are exactly observed (no censoring). \cr\cr

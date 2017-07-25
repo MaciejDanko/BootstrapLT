@@ -12,15 +12,15 @@ Bootstrap_dx(dx, x, pash.parent, N = 1000, pace.type = "all",
 
 \item{x}{Beginning of the Age/time class.}
 
-\item{pash.parent}{A parent pash object.}
+\item{pash.parent}{A parent \code{pash} object.}
 
 \item{N}{Number of bootstrap replicates.}
 
 \item{pace.type}{Which pace measure should be returned (default "all")?
-Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.}
+Use "none" if you don't want to return any pace measure. See \code{\link{GetPace}} for details.}
 
 \item{shape.type}{Which shape measure should be returned (default "all")?
-Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.}
+Use "none" if you don't want to return any shape measure. See \code{\link{GetShape}} for details.}
 
 \item{q}{GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
 See \code{\link{GetPace}} for details.}

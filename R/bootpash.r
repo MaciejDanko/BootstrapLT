@@ -1,13 +1,13 @@
 library(pash)  #remove when integrated with pash
 library(roxygen2)
-#source("./R/input_correction.r") #remove when integrated with pash, and Inputlx corrected
+#source("./R/input_correction") #remove when integrated with pash, and Inputlx corrected
 
-#' Calculate midd-classes of an age interval
+#' Calculate mid-classes of an age interval
 #' 
 #' @description 
-#' Calculate midd-classes of an age interval. \cr\cr
+#' Calculate mid-classes of an age interval. \cr\cr
 #' \emph{\bold{Internal function}}
-#' @param x Vector with begining of age classes.
+#' @param x Vector with beginning of age classes.
 #' @keywords internal
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 getInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
@@ -18,7 +18,7 @@ getInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
 #' Converting dx to lx assuming that all events are exactly observed (no censoring). \cr\cr
 #' \emph{\bold{Internal function}}
 #' @param dx Vector with death counts
-#' @return A vector with population size at the beginnig of interval.
+#' @return A vector with population size at the beginning of interval.
 #' @details 
 #' The presence or absence of open interval does not matter here.
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2age}}, and \code{\link{age2dx}}.
@@ -60,10 +60,10 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #' @keywords internal
 dx2age<-function(dx,x) unlist(sapply(seq_along(x),function (kk) rep(getInterval(x)[kk],dx[kk])))
 
-#' Constructing dx from individual ages/times at deaths
+#' Constructing \code{dx} from individual ages/times at deaths
 #'
 #' @description
-#' The function converts ages/times at death into dx according.
+#' The function converts ages/times at death into \code{dx} according.
 #' Notice that age at deaths are assumed to be exactly observed.\cr\cr
 #' \emph{\bold{Internal function}}
 #' @param times vector with age/times at deaths.
@@ -83,17 +83,17 @@ dx2age<-function(dx,x) unlist(sapply(seq_along(x),function (kk) rep(getInterval(
 #' @keywords internal
 age2dx <- function(times,x) (hist(x = times, plot = FALSE, right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts)
 
-#' Geting pace and shape measures for bootstrap computations
+#' Calculating pace and shape measures as one vector for bootstrap computations
 #'
-#' @description Geting pace and shape measures for bootstrap computations. \cr\cr
+#' @description Calculating pace and shape measures as one vector for bootstrap computations. \cr\cr
 #' \emph{\bold{Internal function}}
 #' @param dx A vector with integer counts (deaths).
 #' @param x Beginning of the Age/time classes. Vector with the same length as \code{dx}
 #' @param pash.parent A parent pash object.
 #' @param pace.type Which pace measure should be returned (default "all")?
-#' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
+#' Use "none" if you don't want to return any pace measure. See \code{\link{GetPace}} for details.
 #' @param shape.type Which shape measure should be returned (default "all")?
-#' Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.
+#' Use "none" if you don't want to return any shape measure. See \code{\link{GetShape}} for details.
 #' @param q GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
 #' See \code{\link{GetPace}} for details.
 #' @param harmonized GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
@@ -127,12 +127,12 @@ JackKnife_dx <- function(dx, x, ...) sapply(x[dx>0], function(kk) getpash(dx = d
 #' \emph{\bold{Internal function}}
 #' @param x Beginning of the Age/time class.
 #' @param dx A vector with integer counts (deaths).
-#' @param pash.parent A parent pash object.
+#' @param pash.parent A parent \code{pash} object.
 #' @param N Number of bootstrap replicates.
 #' @param pace.type Which pace measure should be returned (default "all")?
-#' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
+#' Use "none" if you don't want to return any pace measure. See \code{\link{GetPace}} for details.
 #' @param shape.type Which shape measure should be returned (default "all")?
-#' Use "none" if you don't wat to return any shape measure. See \code{\link{GetShape}} for details.
+#' Use "none" if you don't want to return any shape measure. See \code{\link{GetShape}} for details.
 #' @param q GetPace parameter. Quantile specification for age where q percent of the life-table population is still alive (defaults to median).
 #' See \code{\link{GetPace}} for details.
 #' @param harmonized GetShape parameter. Should the harmonized version of the shape measures be returned (default \code{TRUE})?
@@ -150,16 +150,16 @@ Bootstrap_dx <- function(dx,
                          q = 0.5, 
                          harmonized = TRUE) 
   replicate(n = N, expr = suppressWarnings(getpash(dx = age2dx(sample(x = x, 
-                                                     size = sum(dx), 
-                                                     replace = TRUE, 
-                                                     prob = dx / sum(dx)), 
-                                              x = x),
-                                  x = x,
-                                  pash.parent = pash.parent,
-                                  pace.type = pace.type,
-                                  shape.type = shape.type,
-                                  q = q,
-                                  harmonized = harmonized)))
+                                                                      size = sum(dx), 
+                                                                      replace = TRUE, 
+                                                                      prob = dx / sum(dx)), 
+                                                               x = x),
+                                                   x = x,
+                                                   pash.parent = pash.parent,
+                                                   pace.type = pace.type,
+                                                   shape.type = shape.type,
+                                                   q = q,
+                                                   harmonized = harmonized)))
 
 #' Calculation of JeckKnife acceleration parameter for BCA method
 #' 
@@ -179,13 +179,13 @@ Bootstrap_dx <- function(dx,
 #' dx <- lx2dx(round(object$lt$lx*population.size))
 #' x <- obj$lt$x
 #' 
-#' #Acceleration parameters calculated by slow method
+#' #Acceleration parameters calculated by slow method:
 #' times <- dx2age(dx,x)
 #' gp <- function(times, x, pash.parent) getpash(dx = age2dx(times = times, x=x), x=x, pash.parent = pash.parent)
 #' J1 <- as.matrix(sapply(seq_along(times), function(k) gp(times = times[-k], x = x, pash.parent = obj)))
 #' a.slow <- JackKnifeAcc(J1)
 #' 
-#' #Acceleration parameters calculated by fast method
+#' #Acceleration parameters calculated by fast method:
 #' J2 <- JackKnife_dx(dx = org.dx, x = org.x, pash.parent = obj)
 #' a.fast <- JackKnifeAcc(J2,dx)
 #' 
@@ -202,7 +202,7 @@ JackKnifeAcc <- function(JackKnifeMat, dx){
     L <- rowSums(JackKnifeMat, na.rm = TRUE) / dim(JackKnifeMat)[2] - JackKnifeMat
     a <- rowSums(L^3, na.rm = TRUE) / (6 * rowSums(L^2, na.rm = TRUE)^1.5)
   } else { 
-    # Eficient method to calculate Jacknife a
+    # Efficient method to calculate JackKnife a
     # jackknife constructed from dx 
     dx <- dx[dx > 0] #JackKniefe omitted this values during its construction
     DX <- t(matrix(dx, length(dx), dim(JackKnifeMat)[1]))
@@ -218,14 +218,14 @@ JackKnifeAcc <- function(JackKnifeMat, dx){
 #' Checking if all elements in the vector are equal
 #' @description Checking if all elements in the vector are equal. .\cr\cr
 #' \emph{\bold{Internal function}}
-#' @param x A vector be analized.
+#' @param x A vector to be analyzed.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @keywords internal
 all.elements.equal <- function(x) round(sum(abs(diff(x))),floor(-log10(.Machine$double.eps^0.8))) == 0
 
-#' Calcualtion of the BCA type of confidence intervals
+#' Calculation of the BCA type of confidence intervals
 #' 
-#' @description Calcualtion of the BCA type of confidence intervals. \cr\cr
+#' @description Calculation of the BCA type of confidence intervals. \cr\cr
 #' \emph{\bold{Internal function}}
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
@@ -263,9 +263,9 @@ BCA.CI <- function(OrgEst, BootEst, JackKnifeMat, Orgdx, alpha = 0.05) {
   as.data.frame(result)
 }
 
-#' Calcualtion of the Percentile type of confidence intervals
+#' Calculation of the Percentile type of confidence intervals
 #'
-#' @description Calcualtion of the Percentile type of confidence intervals. \cr\cr
+#' @description Calculation of the Percentile type of confidence intervals. \cr\cr
 #' \emph{\bold{Internal function}}
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
@@ -286,12 +286,12 @@ PER.CI <- function(OrgEst, BootEst, alpha=0.05) {
   }
   ind <- result[,1]>OrgEst
   ind[is.na(ind)] <- FALSE
-  if (sum(ind)>0) warning(paste('Percentile confidence intervals do not cover original estimate in ',rna[ind],'. The lower bound was adjusted.\n',sep=''))
+  if (sum(ind)>0) warning(paste('Percentile confidence intervals do not cover original estimate in ',rna[ind],'. The lower bound was adjusted.\n', sep=''))
   
   result[ind,1] <- OrgEst[ind]
   ind <- result[,2] < OrgEst
   ind[is.na(ind)] <- FALSE
-  if (sum(ind)>0) warning(paste('Percentile confidence intervals do not cover original estimate in ',rna[ind],'. The upper bound was adjusted.\n',sep=''))
+  if (sum(ind)>0) warning(paste('Percentile confidence intervals do not cover original estimate in ',rna[ind],'. The upper bound was adjusted.\n', sep=''))
   
   result[ind,2] <- OrgEst[ind]
   rownames(result) <- rna
@@ -305,7 +305,7 @@ PER.CI <- function(OrgEst, BootEst, alpha=0.05) {
 #' \emph{\bold{Internal function}}
 #' @param x Beginning of the Age/time class.
 #' @param dx A vector with integer counts (deaths).
-#' @param pash.parent A parent pash object.
+#' @param pash.parent A parent \code{pash} object.
 #' @param N Number of bootstrap replicates.
 #' @param js.er Maximal acceptable fraction of JackKnife errors.
 #' @param bs.er Maximal acceptable fraction of Bootstrap errors.
@@ -373,29 +373,29 @@ boot.default <- function(dx,
   }
   
   OrgPash <- getpash(dx = dx, 
+                     x = x,
+                     pash.parent = pash.parent,
+                     pace.type = pace.type,
+                     shape.type = shape.type,
+                     q = q,
+                     harmonized = harmonized)
+  ind0 <- is.na(OrgPash)
+  if (N > 1){
+    jn <- JackKnife_dx(dx = dx, 
                        x = x,
                        pash.parent = pash.parent,
                        pace.type = pace.type,
                        shape.type = shape.type,
                        q = q,
                        harmonized = harmonized)
-  ind0 <- is.na(OrgPash)
-  if (N > 1){
-    jn <- JackKnife_dx(dx = dx, 
-                    x = x,
-                    pash.parent = pash.parent,
-                    pace.type = pace.type,
-                    shape.type = shape.type,
-                    q = q,
-                    harmonized = harmonized)
     bt <- Bootstrap_dx(dx=dx, 
-                   x = x,
-                   pash.parent = pash.parent,
-                   pace.type = pace.type,
-                   shape.type = shape.type,
-                   q = q,
-                   harmonized = harmonized)
- 
+                       x = x,
+                       pash.parent = pash.parent,
+                       pace.type = pace.type,
+                       shape.type = shape.type,
+                       q = q,
+                       harmonized = harmonized)
+    
     z <- .AnalizeBoot(jn = jn, bt = bt, trace = trace, ind0 = ind0)
     CI.Percentile <- as.matrix(PER.CI(OrgEst = OrgPash, 
                                       BootEst = bt,
@@ -414,16 +414,16 @@ boot.default <- function(dx,
     CI.Percentile <- NULL
   }
   return(list(Pash = OrgPash,
-       CI.BCa = CI.BCa,
-       CI.Percentile = CI.Percentile))
+              CI.BCa = CI.BCa,
+              CI.Percentile = CI.Percentile))
 }
 
 
-#' Claculates condfidence intervals for pash measures
+#' Calculating confidence intervals for pash measures
 #' 
-#' @description Claculates condfidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
+#' @description Calculating confidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
 #' @param object \code{Pash} object.
-#' @param population.size The size of population for the constructed pash object. If not given then it will be read from the \code{object}.
+#' @param population.size The size of population for the constructed \code{pash} object. If not given then it will be read from the \code{object}.
 #' @param N Number of bootstrap replicates.
 #' @param pace.type Which pace measure should be returned (default "all")?
 #' Use "none" if you don't wat to return any pace measure. See \code{\link{GetPace}} for details.
@@ -436,7 +436,7 @@ boot.default <- function(dx,
 #' @param trace Logical indicating if to show summary of performed bootstrap.
 #' @param alpha Significance level.
 #' @param bs.er Maximal acceptable fraction of Bootstrap errors 
-#' (a measure does not exists for a certain bootstraped data).
+#' (a measure does not exists for a certain bootstrapped data).
 #' @param js.er Maximal acceptable fraction of JackKnife errors 
 #' (a measure does not exists for a certain JackKnife cases).
 
@@ -456,7 +456,6 @@ boot.default <- function(dx,
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
 #' ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
 #' ci2
-#' print(ci2)
 #' 
 #' #Very small population size
 #' # There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.
@@ -466,16 +465,16 @@ boot.default <- function(dx,
 #' }
 #' @export
 confint.pash<-function(object, 
-                   population.size, 
-                   N = 1000, 
-                   pace.type = "all", 
-                   shape.type = "all", 
-                   q = 0.5, 
-                   harmonized = TRUE,
-                   trace = TRUE,
-                   alpha = 0.05,
-                   bs.er = 0.25, 
-                   jk.er = 0.10){
+                       population.size, 
+                       N = 1000, 
+                       pace.type = "all", 
+                       shape.type = "all", 
+                       q = 0.5, 
+                       harmonized = TRUE,
+                       trace = TRUE,
+                       alpha = 0.05,
+                       bs.er = 0.25, 
+                       jk.er = 0.10){
   i.ndx <- attributes(object)$source$input$dx
   i.lx <- attributes(object)$source$input$lx
   i.x <- attributes(object)$source$input$x
@@ -519,7 +518,7 @@ confint.pash<-function(object,
 #' Printing the confidence intervals for pash object
 #' 
 #' @description  
-#' Generic function to print the confidence intervals for pash object.
+#' Generic function to print the confidence intervals for \code{pash} object.
 #' @param oject An \code{bootpash} object with fitted confidence interval for \code{pash} object.
 #' @param CI.type The type of printed confidence intervals. One from "BCa" or "Percentile".
 #' @export
@@ -529,4 +528,3 @@ print.bootpash <- function(object, CI.type = c('BCa', 'Percentile'), digits = 4)
   print(round(Mat, digits), quote = FALSE)
   invisible(Mat)
 }
-  

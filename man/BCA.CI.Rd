@@ -2,12 +2,12 @@
 % Please edit documentation in R/bootpash.r
 \name{BCA.CI}
 \alias{BCA.CI}
-\title{Calcualtion of the BCA type of confidence intervals}
+\title{Calculation of the BCA type of confidence intervals}
 \usage{
 BCA.CI(OrgEst, BootEst, JackKnifeMat, Orgdx, alpha = 0.05)
 }
 \description{
-Calcualtion of the BCA type of confidence intervals. \cr\cr
+Calculation of the BCA type of confidence intervals. \cr\cr
 \emph{\bold{Internal function}}
 }
 \references{

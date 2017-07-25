@@ -2,15 +2,15 @@
 % Please edit documentation in R/bootpash.r
 \name{getInterval}
 \alias{getInterval}
-\title{Calculate midd-classes of an age interval}
+\title{Calculate mid-classes of an age interval}
 \usage{
 getInterval(x)
 }
 \arguments{
-\item{x}{Vector with begining of age classes.}
+\item{x}{Vector with beginning of age classes.}
 }
 \description{
-Calculate midd-classes of an age interval. \cr\cr
+Calculate mid-classes of an age interval. \cr\cr
 \emph{\bold{Internal function}}
 }
 \author{

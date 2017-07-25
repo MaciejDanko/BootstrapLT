@@ -13,5 +13,5 @@
 \item{oject}{An \code{bootpash} object with fitted confidence interval for \code{pash} object.}
 }
 \description{
-Generic function to print the confidence intervals for pash object.
+Generic function to print the confidence intervals for \code{pash} object.
 }
