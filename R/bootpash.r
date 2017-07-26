@@ -152,7 +152,7 @@ getpash <- function(dx, x, pash.parent, pace.type = "all", shape.type = "all", q
 #' @description 
 #' Build column matrix even if \code{x} is a vector.
 #' @keywords internal
-as.col.matrix <- function(x) {
+as.row.matrix <- function(x) {
   # Using matrices is faster than using sapply for each row (i.e pash measure replicates) of the bootstrap/jackknife matrix.
   # However if only one measure is considered the dimensions of the 1xN matrix are reversed.
   x <- as.matrix(x)
@@ -171,7 +171,7 @@ as.col.matrix <- function(x) {
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @keywords internal
-JackKnife_dx <- function(dx, x, ...) as.col.matrix(sapply(x[dx>0], function(kk) getpash(dx = dx - (x == kk), x = x, ...)))
+JackKnife_dx <- function(dx, x, ...) as.row.matrix(sapply(x[dx>0], function(kk) getpash(dx = dx - (x == kk), x = x, ...)))
 
 #' Fast Bootstrap method performed on \code{dx}
 #' @description Fast Bootstrap method performed on \code{dx}.\cr\cr
@@ -200,7 +200,7 @@ Bootstrap_dx <- function(dx,
                          shape.type = "all", 
                          q = 0.5, 
                          harmonized = TRUE) 
-  as.col.matrix(
+  as.row.matrix(
     replicate(n = N, 
               expr = suppressWarnings(
                 getpash(dx = age2dx(times = sample(x = addHalfInterval(x), 
