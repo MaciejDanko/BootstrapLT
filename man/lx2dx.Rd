@@ -2,18 +2,18 @@
 % Please edit documentation in R/bootpash.r
 \name{lx2dx}
 \alias{lx2dx}
-\title{Converting lx to dx assuming that all events are exactly observed (no censoring)}
+\title{Converting lx to dx assuming that all events are exactly observed within an interval}
 \usage{
 lx2dx(lx)
 }
 \arguments{
-\item{lx}{population size at the beginning of the age interval.}
+\item{lx}{Population size at the beginning of the age interval.}
 }
 \value{
 A vector with death counts.
 }
 \description{
-Converting lx to dx assuming that all events are exactly observed (no censoring). \cr\cr
+Converting lx to dx assuming that all events are exactly observed within an interval. \cr\cr
 \emph{\bold{Internal function}}
 }
 \seealso{

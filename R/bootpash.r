@@ -10,12 +10,12 @@ library(roxygen2)
 #' @param x Vector with beginning of age classes.
 #' @keywords internal
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
-getInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
+addHalfInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
 
-#' Converting dx to lx assuming that all events are exactly observed (no censoring)
+#' Converting dx to lx assuming that all events are exactly observed within an interval
 #'
 #' @description 
-#' Converting dx to lx assuming that all events are exactly observed (no censoring). \cr\cr
+#' Converting dx to lx assuming that all events are exactly observed within an interval. \cr\cr
 #' \emph{\bold{Internal function}}
 #' @param dx Vector with death counts
 #' @return A vector with population size at the beginning of interval.
@@ -26,11 +26,11 @@ getInterval<-function(x) x+c(diff(x),diff(x)[length(x)-1])/2
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 dx2lx<-function(dx) sum(dx)-c(0,cumsum(dx))[seq_along(dx)]
 
-#' Converting lx to dx assuming that all events are exactly observed (no censoring)
+#' Converting lx to dx assuming that all events are exactly observed within an interval
 #'
-#' @description Converting lx to dx assuming that all events are exactly observed (no censoring). \cr\cr
+#' @description Converting lx to dx assuming that all events are exactly observed within an interval. \cr\cr
 #' \emph{\bold{Internal function}}
-#' @param lx population size at the beginning of the age interval.
+#' @param lx Population size at the beginning of the age interval.
 #' @return A vector with death counts. 
 #' @seealso \code{\link{dx2lx}}, \code{\link{dx2age}}, and \code{\link{age2dx}}.
 #' @keywords internal
@@ -41,7 +41,8 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #'
 #' @description
 #' The function converts counts in vector dx into into individual age/time at deaths.
-#' Notice that dx does not contain information about censoring so resulting vector has only exactly observed events.\cr\cr
+#' Notice that dx does not contain information about right censoring so the resulting vector 
+#' has only exactly observed events (deaths).\cr\cr
 #' \emph{\bold{Internal function}}
 #' @param dx Death counts vector.
 #' @param x Beginning of the Age/time class. A vector of the same length as \code{ndx}.
@@ -58,7 +59,7 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #'
 #' }
 #' @keywords internal
-dx2age<-function(dx,x) unlist(sapply(seq_along(x),function (kk) rep(getInterval(x)[kk],dx[kk])))
+dx2age<-function(dx,x) unlist(lapply(seq_along(x),function (kk) rep(addHalfInterval(x)[kk],dx[kk])))
 
 #' Constructing \code{dx} from individual ages/times at deaths
 #'
@@ -72,13 +73,40 @@ dx2age<-function(dx,x) unlist(sapply(seq_along(x),function (kk) rep(getInterval(
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2lx}}, and \code{\link{dx2age}}.
 #' @examples
 #' \dontrun{
+#' # ************************************************************************
 #' # Data:
-#' x=c(0,0.5,2,5,10,13,15)
-#' dx=c(1,2,6,15,22,6,1)
+#' x <- c(0,0.5,2,5,10,13,15)
+#' dx <- c(1,2,6,15,22,6,1)
 #'
 #' # Should give the same vector as in dx.
 #' age2dx(dx2age(dx,x),x)
 #'
+#' # ************************************************************************
+#' # Benchmark test for different procedures
+#' library(microbenchmark)
+#' 
+#' # A dataset
+#' times <- sample(0:1000, size = 100000, replace = TRUE) + 0.5
+#' x <- 0:1000
+#' 
+#' # Default age2dx method based on hist()
+#' age2dx.hist <- function(times, x) hist(x = times, plot = FALSE, 
+#'                right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts
+#' # Method based on cut()
+#' age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] + 1000), right = FALSE))
+#' # Method based on findInterval()
+#' age2dx.fi <- function(times, x) table(findInterval(times, x))
+#' 
+#' A <- age2dx.hist(times, x)
+#' B <- age2dx.cut(times, x)
+#' C <- age2dx.fi(times, x)
+#' 
+#' sum(abs(A-B)) # must be zero
+#' sum(abs(B-C)) # must be zero
+#' 
+#' # hist() based method wins
+#' microbenchmark(age2dx.hist(times, x), age2dx.cut(times, x), age2dx.fi(times, x))
+#' 
 #' }
 #' @keywords internal
 age2dx <- function(times,x) (hist(x = times, plot = FALSE, right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts)
@@ -159,18 +187,20 @@ Bootstrap_dx <- function(dx,
                          shape.type = "all", 
                          q = 0.5, 
                          harmonized = TRUE) 
-  as.col.matrix(replicate(n = N, 
-                      expr = suppressWarnings(getpash(dx = age2dx(times = sample(x = x, 
-                                                                                 size = sum(dx), 
-                                                                                 replace = TRUE, 
-                                                                                 prob = dx / sum(dx)), 
-                                                                  x = x),
-                                                      x = x,
-                                                      pash.parent = pash.parent,
-                                                      pace.type = pace.type,
-                                                      shape.type = shape.type,
-                                                      q = q,
-                                                      harmonized = harmonized))))
+  as.col.matrix(
+    replicate(n = N, 
+              expr = suppressWarnings(
+                getpash(dx = age2dx(times = sample(x = addHalfInterval(x), 
+                                                   size = sum(dx), 
+                                                   replace = TRUE, 
+                                                   prob = dx / sum(dx)), 
+                                    x = x),
+                        x = x,
+                        pash.parent = pash.parent,
+                        pace.type = pace.type,
+                        shape.type = shape.type,
+                        q = q,
+                        harmonized = harmonized))))
 
 #' Calculation of JeckKnife acceleration parameter for BCA method
 #' 

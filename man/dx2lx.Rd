@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootpash.r
 \name{dx2lx}
 \alias{dx2lx}
-\title{Converting dx to lx assuming that all events are exactly observed (no censoring)}
+\title{Converting dx to lx assuming that all events are exactly observed within an interval}
 \usage{
 dx2lx(dx)
 }
@@ -13,7 +13,7 @@ dx2lx(dx)
 A vector with population size at the beginning of interval.
 }
 \description{
-Converting dx to lx assuming that all events are exactly observed (no censoring). \cr\cr
+Converting dx to lx assuming that all events are exactly observed within an interval. \cr\cr
 \emph{\bold{Internal function}}
 }
 \details{

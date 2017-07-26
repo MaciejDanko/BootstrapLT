@@ -13,7 +13,8 @@ dx2age(dx, x)
 }
 \description{
 The function converts counts in vector dx into into individual age/time at deaths.
-Notice that dx does not contain information about censoring so resulting vector has only exactly observed events.\cr\cr
+Notice that dx does not contain information about right censoring so the resulting vector 
+has only exactly observed events (deaths).\cr\cr
 \emph{\bold{Internal function}}
 }
 \examples{

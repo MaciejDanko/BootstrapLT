@@ -18,12 +18,39 @@ Notice that age at deaths are assumed to be exactly observed.\cr\cr
 }
 \examples{
 \dontrun{
+# ************************************************************************
 # Data:
-x=c(0,0.5,2,5,10,13,15)
-dx=c(1,2,6,15,22,6,1)
+x <- c(0,0.5,2,5,10,13,15)
+dx <- c(1,2,6,15,22,6,1)
 
 # Should give the same vector as in dx.
 age2dx(dx2age(dx,x),x)
+
+# ************************************************************************
+# Benchmark test for different procedures
+library(microbenchmark)
+
+# A dataset
+times <- sample(0:1000, size = 100000, replace = TRUE) + 0.5
+x <- 0:1000
+
+# Default age2dx method based on hist()
+age2dx.hist <- function(times, x) hist(x = times, plot = FALSE, 
+               right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts
+# Method based on cut()
+age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] + 1000), right = FALSE))
+# Method based on findInterval()
+age2dx.fi <- function(times, x) table(findInterval(times, x))
+
+A <- age2dx.hist(times, x)
+B <- age2dx.cut(times, x)
+C <- age2dx.fi(times, x)
+
+sum(abs(A-B)) # must be zero
+sum(abs(B-C)) # must be zero
+
+# hist() based method wins
+microbenchmark(age2dx.hist(times, x), age2dx.cut(times, x), age2dx.fi(times, x))
 
 }
 }
