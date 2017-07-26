@@ -2,11 +2,11 @@
 % Please edit documentation in R/bootpash.r
 \name{as.col.matrix}
 \alias{as.col.matrix}
-\title{build column matrix even if x is vector}
+\title{Build column matrix even if x is a vector}
 \usage{
 as.col.matrix(x)
 }
 \description{
-build column matrix even if x is vector
+Build column matrix even if \code{x} is a vector.
 }
 \keyword{internal}

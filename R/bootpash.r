@@ -136,10 +136,12 @@ getpash <- function(dx, x, pash.parent, pace.type = "all", shape.type = "all", q
   return(c(p,s))
 }
 
-#' build column matrix even if x is vector
+#' Build column matrix even if x is a vector
+#' @description 
+#' Build column matrix even if \code{x} is a vector.
 #' @keywords internal
 as.col.matrix <- function(x) {
-  # Using matrices is faster than using sapply for each row (pash measure) of the matrice.
+  # Using matrices is faster than using sapply for each row (i.e pash measure replicates) of the bootstrap/jackknife matrix.
   # However if only one measure is considered the dimensions of the 1xN matrix are reversed.
   x <- as.matrix(x)
   if (dim(x)[2] == 1) x <- t(x)
