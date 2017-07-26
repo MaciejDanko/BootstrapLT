@@ -1,5 +1,5 @@
 library(pash)  #remove when integrated with pash
-library(roxygen2)
+library(roxygen2) #remove when integrated with pash
 
 #' Calculate mid-classes of an age interval
 #' 
@@ -48,7 +48,13 @@ lx2dx<-function(lx) c(-diff(lx),lx[length(lx)])
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2lx}}, and \code{\link{age2dx}}.
 #' @examples
+#' # ************************** REMOVE THIS ******************************
+#' # Some functions will not work as they are not in the namespace
+#' # Before integrating with pash please add "pash:::" in front of them. 
+#' # To test them just run all functions in the bootpash.r 
+#' # ***************************** END ***********************************
 #' \dontrun{
+#' 
 #' # Data:
 #' x=c(0,0.5,2,5,10,13,15)
 #' dx=c(1,2,6,15,22,6,1)
@@ -71,7 +77,13 @@ dx2age<-function(dx,x) unlist(lapply(seq_along(x),function (kk) rep(addHalfInter
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @seealso \code{\link{lx2dx}}, \code{\link{dx2lx}}, and \code{\link{dx2age}}.
 #' @examples
+#' # ************************** REMOVE THIS ******************************
+#' # Some functions will not work as they are not in the namespace
+#' # Before integrating with pash please add "pash:::" in front of them. 
+#' # To test them just run all functions in the bootpash.r 
+#' # ***************************** END ***********************************
 #' \dontrun{
+#' 
 #' # ************************************************************************
 #' # Data:
 #' x <- c(0,0.5,2,5,10,13,15)
@@ -213,6 +225,11 @@ Bootstrap_dx <- function(dx,
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall. Page 186.
 #' @examples
+#' # ************************** REMOVE THIS ******************************
+#' # Some functions will not work as they are not in the namespace
+#' # Before integrating with pash please add "pash:::" in front of them. 
+#' # To test them just run all functions in the bootpash.r 
+#' # ***************************** END ***********************************
 #' \dontrun{
 #' 
 #' #Get some data
@@ -372,6 +389,11 @@ PER.CI <- function(OrgEst, BootEst, alpha=0.05) {
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @examples 
+#' # ************************** REMOVE THIS ******************************
+#' # Some functions will not work as they are not in the namespace
+#' # Before integrating with pash please add "pash:::" in front of them. 
+#' # To test them just run all functions in the bootpash.r 
+#' # ***************************** END ***********************************
 #' \dontrun{
 #' 
 #' #Get some data

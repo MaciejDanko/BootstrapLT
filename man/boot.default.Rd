@@ -42,6 +42,11 @@ Default procedure to perform bootstrap and calculate confidence intervals of pas
 \emph{\bold{Internal function}}
 }
 \examples{
+# ************************** REMOVE THIS ******************************
+# Some functions will not work as they are not in the namespace
+# Before integrating with pash please add "pash:::" in front of them. 
+# To test them just run all functions in the bootpash.r 
+# ***************************** END ***********************************
 \dontrun{
 
 #Get some data

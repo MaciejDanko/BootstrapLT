@@ -18,7 +18,13 @@ has only exactly observed events (deaths).\cr\cr
 \emph{\bold{Internal function}}
 }
 \examples{
+# ************************** REMOVE THIS ******************************
+# Some functions will not work as they are not in the namespace
+# Before integrating with pash please add "pash:::" in front of them. 
+# To test them just run all functions in the bootpash.r 
+# ***************************** END ***********************************
 \dontrun{
+
 # Data:
 x=c(0,0.5,2,5,10,13,15)
 dx=c(1,2,6,15,22,6,1)
