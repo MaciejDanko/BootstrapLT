@@ -109,6 +109,16 @@ getpash <- function(dx, x, pash.parent, pace.type = "all", shape.type = "all", q
   return(c(p,s))
 }
 
+#' build column matrix even if x is vector
+#' @keywords internal
+as.col.matrix <- function(x) {
+  # Using matrices is faster than using sapply for each row (pash measure) of the matrice.
+  # However if only one measure is considered the dimensions of the 1xN matrix are reversed.
+  x <- as.matrix(x)
+  if (dim(x)[2] == 1) x <- t(x)
+  x
+}
+
 #' Fast JackKnife method performed on \code{dx}
 #' 
 #' @description Fast JackKnife method performed on \code{dx}.\cr\cr
@@ -120,7 +130,7 @@ getpash <- function(dx, x, pash.parent, pace.type = "all", shape.type = "all", q
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @keywords internal
-JackKnife_dx <- function(dx, x, ...) sapply(x[dx>0], function(kk) getpash(dx = dx - (x == kk), x = x, ...))
+JackKnife_dx <- function(dx, x, ...) as.col.matrix(sapply(x[dx>0], function(kk) getpash(dx = dx - (x == kk), x = x, ...)))
 
 #' Fast Bootstrap method performed on \code{dx}
 #' @description Fast Bootstrap method performed on \code{dx}.\cr\cr
@@ -149,17 +159,18 @@ Bootstrap_dx <- function(dx,
                          shape.type = "all", 
                          q = 0.5, 
                          harmonized = TRUE) 
-  replicate(n = N, expr = suppressWarnings(getpash(dx = age2dx(sample(x = x, 
-                                                                      size = sum(dx), 
-                                                                      replace = TRUE, 
-                                                                      prob = dx / sum(dx)), 
-                                                               x = x),
-                                                   x = x,
-                                                   pash.parent = pash.parent,
-                                                   pace.type = pace.type,
-                                                   shape.type = shape.type,
-                                                   q = q,
-                                                   harmonized = harmonized)))
+  as.col.matrix(replicate(n = N, 
+                      expr = suppressWarnings(getpash(dx = age2dx(times = sample(x = x, 
+                                                                                 size = sum(dx), 
+                                                                                 replace = TRUE, 
+                                                                                 prob = dx / sum(dx)), 
+                                                                  x = x),
+                                                      x = x,
+                                                      pash.parent = pash.parent,
+                                                      pace.type = pace.type,
+                                                      shape.type = shape.type,
+                                                      q = q,
+                                                      harmonized = harmonized))))
 
 #' Calculation of JeckKnife acceleration parameter for BCA method
 #' 
@@ -195,7 +206,6 @@ Bootstrap_dx <- function(dx,
 #' }
 #' @keywords internal
 JackKnifeAcc <- function(JackKnifeMat, dx){
-  JackKnifeMat <- as.matrix(JackKnifeMat)
   if (missing(dx)){ 
     # Classic approach
     # Jackknife constructed from times, very slow method for big populations
@@ -452,9 +462,9 @@ boot.default <- function(dx,
 #' print(ci1, CI.type = 'BCa')
 #' print(ci1, CI.type = 'Percentile')
 #'
-#' #Small population size
+#' #Smaller population size, closed interval, only e0
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
-#' ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
+#' ci2 <- confint(object = obj, population.size = 300, shape.type = 'none', pace.type = 'e0', trace = TRUE)
 #' ci2
 #' 
 #' #Very small population size

@@ -50,9 +50,9 @@ ci1 <- confint(object = obj, population.size = 1000, trace = TRUE)
 print(ci1, CI.type = 'BCa')
 print(ci1, CI.type = 'Percentile')
 
-#Small population size
+#Smaller population size, closed interval, only e0
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, last_open = FALSE) 
-ci2 <- confint(object = obj, population.size = 300, trace = TRUE)
+ci2 <- confint(object = obj, population.size = 300, shape.type = 'none', pace.type = 'e0', trace = TRUE)
 ci2
 
 #Very small population size
