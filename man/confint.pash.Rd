@@ -32,10 +32,10 @@ See \code{\link{GetShape}} for details.}
 \item{alpha}{Significance level.}
 
 \item{bs.er}{Maximal acceptable fraction of Bootstrap errors 
-(a measure does not exists for a certain bootstrapped data).}
+(error = a measure does not exists for a certain bootstrapped data).}
 
 \item{js.er}{Maximal acceptable fraction of JackKnife errors 
-(a measure does not exists for a certain JackKnife cases).}
+(error = a measure does not exists for a certain JackKnife cases).}
 }
 \description{
 Calculating confidence intervals around pash measures for a given \code{pash} object. \cr\cr Generic function.
@@ -55,7 +55,8 @@ obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$na
 ci2 <- confint(object = obj, population.size = 300, shape.type = 'none', pace.type = 'e0', trace = TRUE)
 ci2
 
-#Very small population size
+# Very small population size  
+### REMOVE THIS EXAMPLE ONCE THE ERROR IS CORRECTED
 # There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.
 obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
 ci3 <- confint(object = obj, population.size = 10, shape.type = 'none', trace = TRUE)

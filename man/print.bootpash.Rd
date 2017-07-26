@@ -8,9 +8,9 @@
   digits = 4)
 }
 \arguments{
-\item{CI.type}{The type of printed confidence intervals. One from "BCa" or "Percentile".}
+\item{CI.type}{The type of the printed confidence intervals. One of "BCa" or "Percentile".}
 
-\item{oject}{An \code{bootpash} object with fitted confidence interval for \code{pash} object.}
+\item{oject}{An \code{bootpash} object with fitted confidence interval for \code{pash} object. See \code{\link{confint.pash}}.}
 }
 \description{
 Generic function to print the confidence intervals for \code{pash} object.

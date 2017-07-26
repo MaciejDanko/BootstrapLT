@@ -6,6 +6,17 @@
 \usage{
 BCA.CI(OrgEst, BootEst, JackKnifeMat, Orgdx, alpha = 0.05)
 }
+\arguments{
+\item{OrgEst}{Output of \code{\link{getpash}} for original dataset.}
+
+\item{BootEst}{Output of \code{\link{getpash}} for all bootstrap replicates.}
+
+\item{JackKnifeMat}{Output of \code{\link{getpash}} for JackKnife samples. See \code{\link{JackKnife_dx}}.}
+
+\item{Orgdx}{Vector with counts (deaths) for original dataset.}
+
+\item{alpha}{Significance level.}
+}
 \description{
 Calculation of the BCA type of confidence intervals. \cr\cr
 \emph{\bold{Internal function}}

@@ -6,6 +6,13 @@
 \usage{
 PER.CI(OrgEst, BootEst, alpha = 0.05)
 }
+\arguments{
+\item{OrgEst}{Output of \code{\link{getpash}} for original dataset.}
+
+\item{BootEst}{Output of \code{\link{getpash}} for all bootstrap replicates.}
+
+\item{alpha}{Significance level.}
+}
 \description{
 Calculation of the Percentile type of confidence intervals. \cr\cr
 \emph{\bold{Internal function}}

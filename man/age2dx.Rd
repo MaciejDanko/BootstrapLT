@@ -12,8 +12,8 @@ age2dx(times, x)
 \item{x}{Beginning of the Age/time class. The resulting vector of \code{dx} will have the same length.}
 }
 \description{
-The function converts ages/times at death into \code{dx} according.
-Notice that age at deaths are assumed to be exactly observed.\cr\cr
+The function converts ages/times at death into \code{dx}..
+Notice that all ages at death are assumed to be exactly observed.\cr\cr
 \emph{\bold{Internal function}}
 }
 \examples{
@@ -36,9 +36,9 @@ x <- 0:1000
 
 # Default age2dx method based on hist()
 age2dx.hist <- function(times, x) hist(x = times, plot = FALSE, 
-               right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts
+               right = FALSE, breaks = c(x, x[length(x)] * 2))$counts
 # Method based on cut()
-age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] + 1000), right = FALSE))
+age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] * 2), right = FALSE))
 # Method based on findInterval()
 age2dx.fi <- function(times, x) table(findInterval(times, x))
 

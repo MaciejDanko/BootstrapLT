@@ -1,6 +1,5 @@
 library(pash)  #remove when integrated with pash
 library(roxygen2)
-#source("./R/input_correction") #remove when integrated with pash, and Inputlx corrected
 
 #' Calculate mid-classes of an age interval
 #' 
@@ -64,8 +63,8 @@ dx2age<-function(dx,x) unlist(lapply(seq_along(x),function (kk) rep(addHalfInter
 #' Constructing \code{dx} from individual ages/times at deaths
 #'
 #' @description
-#' The function converts ages/times at death into \code{dx} according.
-#' Notice that age at deaths are assumed to be exactly observed.\cr\cr
+#' The function converts ages/times at death into \code{dx}..
+#' Notice that all ages at death are assumed to be exactly observed.\cr\cr
 #' \emph{\bold{Internal function}}
 #' @param times vector with age/times at deaths.
 #' @param x Beginning of the Age/time class. The resulting vector of \code{dx} will have the same length.
@@ -91,9 +90,9 @@ dx2age<-function(dx,x) unlist(lapply(seq_along(x),function (kk) rep(addHalfInter
 #' 
 #' # Default age2dx method based on hist()
 #' age2dx.hist <- function(times, x) hist(x = times, plot = FALSE, 
-#'                right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts
+#'                right = FALSE, breaks = c(x, x[length(x)] * 2))$counts
 #' # Method based on cut()
-#' age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] + 1000), right = FALSE))
+#' age2dx.cut <- function(times, x) table(cut(times, c(x, x[length(x)] * 2), right = FALSE))
 #' # Method based on findInterval()
 #' age2dx.fi <- function(times, x) table(findInterval(times, x))
 #' 
@@ -109,7 +108,7 @@ dx2age<-function(dx,x) unlist(lapply(seq_along(x),function (kk) rep(addHalfInter
 #' 
 #' }
 #' @keywords internal
-age2dx <- function(times,x) (hist(x = times, plot = FALSE, right = FALSE, breaks = c(x, x[length(x)] + 1000))$counts)
+age2dx <- function(times, x) (hist(x = times, plot = FALSE, right = FALSE, breaks = c(x, x[length(x)] * 2))$counts)
 
 #' Calculating pace and shape measures as one vector for bootstrap computations
 #'
@@ -267,6 +266,11 @@ all.elements.equal <- function(x) round(sum(abs(diff(x))),floor(-log10(.Machine$
 #' 
 #' @description Calculation of the BCA type of confidence intervals. \cr\cr
 #' \emph{\bold{Internal function}}
+#' @param OrgEst Output of \code{\link{getpash}} for original dataset.
+#' @param BootEst Output of \code{\link{getpash}} for all bootstrap replicates.
+#' @param JackKnifeMat Output of \code{\link{getpash}} for JackKnife samples. See \code{\link{JackKnife_dx}}.
+#' @param Orgdx Vector with counts (deaths) for original dataset.
+#' @param alpha Significance level.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
@@ -307,6 +311,9 @@ BCA.CI <- function(OrgEst, BootEst, JackKnifeMat, Orgdx, alpha = 0.05) {
 #'
 #' @description Calculation of the Percentile type of confidence intervals. \cr\cr
 #' \emph{\bold{Internal function}}
+#' @param OrgEst Output of \code{\link{getpash}} for original dataset.
+#' @param BootEst Output of \code{\link{getpash}} for all bootstrap replicates.
+#' @param alpha Significance level.
 #' @author Maciej J. Danko <\email{danko@demogr.mpg.de}> <\email{maciej.danko@gmail.com}>
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
@@ -476,10 +483,9 @@ boot.default <- function(dx,
 #' @param trace Logical indicating if to show summary of performed bootstrap.
 #' @param alpha Significance level.
 #' @param bs.er Maximal acceptable fraction of Bootstrap errors 
-#' (a measure does not exists for a certain bootstrapped data).
+#' (error = a measure does not exists for a certain bootstrapped data).
 #' @param js.er Maximal acceptable fraction of JackKnife errors 
-#' (a measure does not exists for a certain JackKnife cases).
-
+#' (error = a measure does not exists for a certain JackKnife cases).
 #' @references 
 #' Efron, B., & Tibshirani, R. J. (1993). An introduction to the bootstrap. New York: Chapman & Hall.
 #' @examples 
@@ -497,7 +503,8 @@ boot.default <- function(dx,
 #' ci2 <- confint(object = obj, population.size = 300, shape.type = 'none', pace.type = 'e0', trace = TRUE)
 #' ci2
 #' 
-#' #Very small population size
+#' # Very small population size  
+#' ### REMOVE THIS EXAMPLE ONCE THE ERROR IS CORRECTED
 #' # There is a mistake in pash package. The linear extrapolation doesn't work for some sets with open last intervals.
 #' obj <- Inputlx(x = australia_10y$x, lx = australia_10y$lx,nax = australia_10y$nax, nx = australia_10y$nx, last_open = TRUE)
 #' ci3 <- confint(object = obj, population.size = 10, shape.type = 'none', trace = TRUE)
@@ -559,8 +566,8 @@ confint.pash<-function(object,
 #' 
 #' @description  
 #' Generic function to print the confidence intervals for \code{pash} object.
-#' @param oject An \code{bootpash} object with fitted confidence interval for \code{pash} object.
-#' @param CI.type The type of printed confidence intervals. One from "BCa" or "Percentile".
+#' @param oject An \code{bootpash} object with fitted confidence interval for \code{pash} object. See \code{\link{confint.pash}}.
+#' @param CI.type The type of the printed confidence intervals. One of "BCa" or "Percentile".
 #' @export
 print.bootpash <- function(object, CI.type = c('BCa', 'Percentile'), digits = 4){
   if (tolower(CI.type[1]) == 'bca') CI <- object$CI.BCa else if (tolower(CI.type[1]) == 'percentile') CI <- object$CI.Percentile else stop('Unknown CI type.')
